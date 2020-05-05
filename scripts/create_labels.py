@@ -60,12 +60,12 @@ def create_file(folder_path, type_file='train'):
 	val_folders = []
 	save_path = ''
 	all_jsons = []
-	if type_file == 'train':
-		folders_to_keep = [folder for folder in all_folders if folder not in val_folders]
-		save_path = '../train.txt'
-	else:
-		folders_to_keep = val_folders
-		save_path = '../val.txt'
+	# if type_file == 'train':
+	folders_to_keep = [folder for folder in all_folders if folder not in val_folders]
+	train_save_path = '../train.txt'
+	# else:
+	# folders_to_keep = val_folders
+	val_save_path = '../val.txt'
 
 	json_matrix = [[os.path.join(folder_path, l_folder, l_file) for l_file in os.listdir(os.path.join(folder_path, l_folder)) if '.json' in l_file] for l_folder in folders_to_keep]
 	json_list = np.array(json_matrix).flatten().tolist()
@@ -109,9 +109,21 @@ def create_file(folder_path, type_file='train'):
 					temp = 0
 
 
+	validation_factor = 0.1
 
-	f = open(save_path, 'w')
-	for ele in text_lines:
+	training_index = int(len(text_lines) * validation_factor)
+
+	validation_lines = text_lines[:training_index]
+
+	training_lines = text_lines[training_index:]
+
+	f = open(train_save_path, 'w')
+	for ele in training_lines:
+		f.write(ele + '\n')
+	f.close()
+
+	f = open(val_save_path, 'w')
+	for ele in validation_lines:
 		f.write(ele + '\n')
 	f.close()
 	temp = 0
